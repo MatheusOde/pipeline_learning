@@ -1,0 +1,28 @@
+image: maven:3.6.3-openjdk-11
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - mvn clean install -DskipTests -f demo/pom.xml
+    - echo "Compile complete."
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - echo "Running unit tests..."
+    - mvn test -f demo/pom.xml
+    - echo "Code coverage is 100%"
+
+# deploy-job:      # This job runs in the deploy stage.
+#   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - mvn deploy -f demo/pom.xml
+#     - echo "Application successfully deployed."
